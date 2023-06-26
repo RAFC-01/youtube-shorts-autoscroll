@@ -1,5 +1,3 @@
-
-window.addEventListener('hashchange', toggleCheck);
 // check url change
 function urlChangeListener(){
     let last;
@@ -16,27 +14,47 @@ function nextShort(){
 
 let interval;
 function toggleCheck(){
-    console.log('toggle check')
     if (document.location.href.includes('shorts')){
         let currentVidTag = ".reel-video-in-sequence[is-active]";
-        let progress_bar = document.querySelector(` ${currentVidTag} > .overlay > .style-scope > #overlay > #progress-bar > .style-scope > .style-scope`);
-        progress_bar.removeAttribute('hidden');
+        waitForElem(` ${currentVidTag} > .overlay > .style-scope > #overlay > #progress-bar > .style-scope > .style-scope`, (elem)=> {
+            elem.removeAttribute('hidden');
+        });
+        let views = document.querySelector("#factoids > ytd-factoid-renderer:nth-child(2) > div").getAttribute('aria-label');
+        console.log(views);
         //auto scroll
+        // let videoPlayer = document.querySelector(`${currentVidTag} > #player-container > #player > #container > div > div > video`);
         let lastRecordedValue = 0;
         let lastRecordedURL = document.location.href.substring(document.location.href.lastIndexOf('shorts/')+7);
-        if (interval) return;
-        interval = setInterval(()=> {
-            let currentValue = +document.querySelector("#progress-bar-line").getAttribute('aria-valuenow');
-            let currURL = document.location.href.substring(document.location.href.lastIndexOf('shorts/')+7);
-            if (lastRecordedValue > currentValue || currentValue == 100){
-                if (currURL == lastRecordedURL) nextShort();
-            }
-            console.log(lastRecordedURL);
-            lastRecordedURL = currURL;
-            lastRecordedValue = currentValue;
-        }, 500);
+        waitForElem(`${currentVidTag} > #player-container > #player > #container > div > div > video`, (video)=> {
+            console.log(video);
+            video.loop = false;
+            video.addEventListener('ended', ()=>{
+                let currURL = document.location.href.substring(document.location.href.lastIndexOf('shorts/')+7);
+                if (currURL == lastRecordedURL) {
+                    video.removeEventListener('ended', ()=> {
+                        nextShort();
+                    });
+                }
+            }, false)
+        })
     }else{
         if (interval) clearInterval(interval);
+    }
+}
+function waitForElem(tag, next){
+    let limit = 200; // tries;
+    let i = 0;
+    let time = setInterval(()=> {
+        if (document.querySelector(tag)){
+             next(document.querySelector(tag));
+             clearInterval(time);
+        }
+        i++;
+        console.log('going');
+    },100);
+    if (i > limit){
+        clearInterval(time)
+        next(0);
     }
 }
 urlChangeListener();
