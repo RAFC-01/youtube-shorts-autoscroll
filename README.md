@@ -1,6 +1,6 @@
 # youtube-shorts-autoscroll
 Chrome extension that provides additional features to Youtube Shorts
-# installation
+# installation:
 1. Download the zip file
 2. Extract the folder
 3. Go to your chrome extensions
