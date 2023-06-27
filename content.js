@@ -35,7 +35,6 @@ function toggleCheck(isShorts){
         let currURL = document.location.href.substring(document.location.href.lastIndexOf('shorts/')+7);
         let vid;
         waitForElem(`${currentVidTag} > #player-container > #player > #container > div > div > video`, (video)=> {
-            console.log(video);
             video.loop = false;
             video.addEventListener('ended', nextShort);
         })
@@ -51,7 +50,6 @@ function waitForElem(tag, next){
              clearInterval(time);
         }
         i++;
-        console.log('going');
     },100);
     if (i > limit){
         clearInterval(time)
@@ -66,6 +64,7 @@ function onShortsLocationChange(isShorts){
     }
 }
 function skipShortTime(e){
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
     waitForElem(videoPlayerTag, (video)=>{
         let forward = e.key == 'ArrowRight';
         if (forward){
