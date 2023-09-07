@@ -9,4 +9,4 @@ Chrome extension that provides additional features to Youtube Shorts
 6. Done!
 # features:
 1. Automatic shorts scrolling
-2. Skipping short one sec forward/backward
+2. Skipping short one sec forward/backward (with arrow keys [<-] [->])
