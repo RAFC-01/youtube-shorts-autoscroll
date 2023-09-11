@@ -21,8 +21,5 @@
         "tabs",
         "storage",
         "notifications"
-    ],
-    "action": {
-        "default_popup": "popup.html"
-    }
+    ]
 }
