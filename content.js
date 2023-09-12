@@ -51,16 +51,20 @@ function urlChangeListener(){
 function nextShort(remove = 1){
     document.querySelector("#navigation-button-down > ytd-button-renderer > yt-button-shape > button > yt-touch-feedback-shape > div > div.yt-spec-touch-feedback-shape__fill").click();
     if (remove) document.querySelector('.reel-video-in-sequence[is-active] > #player-container > #player > #container > div > div > video').removeEventListener('ended', nextShort);
+    document.querySelector('.reel-video-in-sequence[is-active] > #player-container > #player > #container > div > div > video').removeEventListener('timeupdate', timeUpdate);
 }
 
-
+function timeUpdate(){
+    if (!document.querySelector('.reel-video-in-sequence[is-active] > #player-container > #player > #container > div > div > video')) return;
+    document.querySelector('.reel-video-in-sequence[is-active] > #player-container > #player > #container > div > div > video').loop = false;
+}
 function toggleCheck(isShorts){
     if (isShorts){
         let url = document.location.pathname;
         
         // progress-bar
         let currentVidTag = ".reel-video-in-sequence[is-active]";
-        document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-smartimation > yt-button-shape > button > yt-touch-feedback-shape > div > div.yt-spec-touch-feedback-shape__fill")
+        // document.querySelector("#subscribe-button > ytd-subscribe-button-renderer > yt-smartimation > yt-button-shape > button > yt-touch-feedback-shape > div > div.yt-spec-touch-feedback-shape__fill")
         waitForElem(` ${currentVidTag} > .overlay > .style-scope > #overlay > #progress-bar > .style-scope > .style-scope`, (elem)=> {
             elem.removeAttribute('hidden');
             // console.log(firstEnter);
@@ -88,8 +92,8 @@ function toggleCheck(isShorts){
         let currURL = document.location.href.substring(document.location.href.lastIndexOf('shorts/')+7);
         let vid;
         waitForElem(`${currentVidTag} > #player-container > #player > #container > div > div > video`, (video)=> {
-            video.loop = false;
             video.addEventListener('ended', nextShort);
+            video.addEventListener('timeupdate', timeUpdate); // disable looping
             //add to seen videos
             seenVideos[url] = 1;
         })
@@ -128,6 +132,7 @@ function skipShortTime(e){
         }else{
             video.currentTime -= timeSkipAmmount;
         }
+        video.loop = false;
     })
 }
 window.onload = () => {
@@ -138,6 +143,7 @@ window.onload = () => {
                 urlChangeListener();
                 toggleCheck(document.location.href.includes('shorts'));
                 onShortsLocationChange(document.location.href.includes('shorts'));
+                video.loop = false;
             });
         });
     });
