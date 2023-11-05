@@ -32,7 +32,7 @@ let viewsLowestSkip = 0;
 
 const seenVideos = {};
 
-const checker = new viewsChecker();
+// const checker = new viewsChecker();
 // check url change
 function urlChangeListener(){
     let last;
@@ -76,21 +76,12 @@ function toggleCheck(isShorts){
                 
             }
         });
-        // skip low views
-        // let views = document.querySelector("#factoids > ytd-factoid-renderer:nth-child(2) > div").getAttribute('aria-label');
-        checker.lookForChange((views)=> {
-            // console.log(views, viewsLowestSkip, seenVideos[url])
-            if (views < viewsLowestSkip && !seenVideos[url]){
-                // console.log('skip');
-                nextShort(0);
-            }
-        });
-        // console.log(views);
         //auto scroll
         videoPlayerTag = `${currentVidTag} > #player-container > #player > #container > div > div > video`;
         let lastRecordedValue = 0;
         let currURL = document.location.href.substring(document.location.href.lastIndexOf('shorts/')+7);
         let vid;
+        // console.log('work')
         waitForElem(`${currentVidTag} > #player-container > #player > #container > div > div > video`, (video)=> {
             video.addEventListener('ended', nextShort);
             video.addEventListener('timeupdate', timeUpdate); // disable looping
@@ -139,12 +130,11 @@ window.onload = () => {
     let currentVidTag = ".reel-video-in-sequence[is-active]";
     waitForElem("#factoids > ytd-factoid-renderer:nth-child(2) > div", ()=>{
         waitForElem(`${currentVidTag} > #player-container > #player > #container > div > div > video`, (video)=> {
-            waitForElem('#subscribe-button > ytd-subscribe-button-renderer > yt-smartimation > yt-button-shape > button > yt-touch-feedback-shape > div > div.yt-spec-touch-feedback-shape__fill', ()=> {
-                urlChangeListener();
-                toggleCheck(document.location.href.includes('shorts'));
-                onShortsLocationChange(document.location.href.includes('shorts'));
-                video.loop = false;
-            });
+            console.log('here')
+            urlChangeListener();
+            toggleCheck(document.location.href.includes('shorts'));
+            onShortsLocationChange(document.location.href.includes('shorts'));
+            video.loop = false;
         });
     });
 }
